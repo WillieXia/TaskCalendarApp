@@ -14,6 +14,8 @@ require('dotenv').config()
 // App configuration
 const app = express()
 const PORT = process.env.PORT || 3000
+app.use(express.urlencoded({ extended: true }))
+app.use(express.json());
 app.use('/auth', authRouter)
 app.use('/class', classRouter)
 app.use('/task', taskRouter)
