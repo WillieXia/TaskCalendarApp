@@ -7,10 +7,11 @@ const taskSchema = new mongoose.Schema({
   },
   progress: {
     type: Number,
+    default: 0,
     required: true
   },
   class_id: {
-    type: Number,
+    type: mongoose.Schema.Types.ObjectId,
     required: true
   }
 });

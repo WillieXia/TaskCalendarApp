@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken')
 const router = express.Router()
 
 const UserModel = require('../models/User')
+const ClassModel = require('../models/Class')
+const TaskModel = require('../models/Task')
 
 router.post('/login', async (req, res) => {
   try { 
@@ -70,18 +72,55 @@ router.post('/logout', (req, res) => {
   res.redirect('/')
 }) 
 
-router.post('/class', (req, res) => {
+router.post('/class', verifyToken, async (req, res) => {
   if (!req.isAuthenticated) {
-    return res.redirect('/')
+    return res.sendStatus(401)
   }
-  // TODO: create class
+  try {
+    const newClass = new ClassModel({
+      name: req.body.name,
+      user_id: req.user._id
+    })
+    await newClass.save()
+    res.sendStatus(201)
+  } catch(err) {
+    console.log(err)
+    res.sendStatus(500)
+  }
 }) 
 
-router.post('/task', (req, res) => {
+router.post('/task', verifyToken, async (req, res) => {
   if (!req.isAuthenticated) {
-    return res.redirect('/')
+    return res.sendStatus(401)
   }
-  // TODO: create task
+  try {
+    const newTask = new TaskModel({
+      text: req.body.text,
+      class_id: req.body.class_id
+    })
+    await newTask.save()
+    res.sendStatus(201)
+  } catch(err) {
+    console.log(err)
+    res.sendStatus(500)
+  }
 }) 
+
+router.get('/allClassesWithTasks', verifyToken, async (req, res) => {
+  if (!req.isAuthenticated) {
+    return res.sendStatus(401)
+  }
+  try {
+    let classes = await ClassModel.find({ user_id: req.user._id })
+    for (let i = 0; i < classes.length; i++) {
+      classes[i] = classes[i].toObject()
+      classes[i].tasks = await TaskModel.find({ class_id: classes[i]._id })
+    }
+    res.json(classes)
+  } catch(err) {
+    console.log(err)
+    res.sendStatus(500)
+  }
+})
 
 module.exports = router

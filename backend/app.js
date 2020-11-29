@@ -22,6 +22,7 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
 }))
+app.use(express.static(__dirname + '/views'))
 app.set('view-engine', 'ejs')
 app.use('/', viewRouter)
 app.use('/api/', apiRouter)
