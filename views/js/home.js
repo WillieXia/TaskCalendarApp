@@ -10,9 +10,6 @@ const classPages = $('#classPages')
 newClassForm = $('#newClassForm')
 newTaskForm = $('#newTaskForm')
 
-newClassForm.submit(function(e) { e.preventDefault() })
-newTaskForm.submit(function(e) { e.preventDefault() })
-
 let allClassesWithTasks = []
 
 function getTaskHTML(task, _class) {
@@ -86,17 +83,7 @@ function updateContent(classes) {
   }
 }
 
-function updateAllClassesWithTasks() {
-  fetch('/api/allClassesWithTasks')
-  .then(res => res.json())
-  .then(classes => {
-    resetContent()
-    updateContent(classes)
-    allClassesWithTasks = classes
-  })
-}
-
-addClassBtn.click(() => {
+function addClass() {
   const body = {
     name: newClassName.val()
   }
@@ -109,16 +96,16 @@ addClassBtn.click(() => {
   })
   .then(res => {
     if (res.status == 201) {
-      // TODO: Close modal
       updateAllClassesWithTasks()
+      newClassForm.trigger("reset");
     } else {
       console.log(err)
       // TODO: show error
     }
   })
-})
+}
 
-addTaskBtn.click(() => {
+function addTask() {
   const body = {
     text: newTaskText.val(),
     class_id: newTaskClassSelect.val()
@@ -132,13 +119,35 @@ addTaskBtn.click(() => {
   })
   .then(res => {
     if (res.status == 201) {
-      // TODO: Close modal
       updateAllClassesWithTasks()
+      newTaskForm.trigger("reset");
     } else {
       console.log(err)
       // TODO: show error
     }
   })
+}
+
+function updateAllClassesWithTasks() {
+  fetch('/api/allClassesWithTasks')
+  .then(res => res.json())
+  .then(classes => {
+    resetContent()
+    updateContent(classes)
+    allClassesWithTasks = classes
+  })
+}
+
+
+newClassForm.submit(function(e) { e.preventDefault() })
+newTaskForm.submit(function(e) { e.preventDefault() })
+
+addClassBtn.click(() => {
+  addClass()
+})
+
+addTaskBtn.click(() => {
+  addTask()
 })
 
 updateAllClassesWithTasks()
