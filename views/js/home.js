@@ -7,6 +7,12 @@ const addClassBtn = $('#addClassBtn')
 const classList = $('#classList')
 const classPages = $('#classPages')
 
+newClassForm = $('#newClassForm')
+newTaskForm = $('#newTaskForm')
+
+newClassForm.submit(function(e) { e.preventDefault() })
+newTaskForm.submit(function(e) { e.preventDefault() })
+
 let allClassesWithTasks = []
 
 function getTaskHTML(task, _class) {
@@ -63,7 +69,9 @@ function updateContent(classes) {
           $(`#list-${_class._id}`).append(taskHTML)
         }
       } else {
-        allClassHTML += `<p>This class has no tasks! Click "Add Tasks" to continue.</p>`
+        const noTasksHTML = `<p>${_class.name} has no tasks! Click "Add Tasks" to continue.</p>`
+        allClassHTML += noTasksHTML
+        $(`#list-${_class._id}`).append(noTasksHTML)
       }
       // TODO: Load tasks
       newTaskClassSelect.append(`
