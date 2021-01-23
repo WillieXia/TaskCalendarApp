@@ -1,43 +1,33 @@
-// Module Imports
-const express = require('express')
-const mongoose = require('mongoose')
-const cookieParser = require('cookie-parser')
-const session = require('express-session')
+const express = require('express');
+const session = require('express-session');
+const mongoose = require('mongoose');
 
-// Router imports
-const viewRouter = require('./routes/view')
-const apiRouter = require('./routes/api')
+// Setup environmenta variables
+require('dotenv').config();
 
-// Configure .env
-require('dotenv').config()
+// App declarations
+const app = express();
+const PORT = process.env.PORT || 4200;
 
-// App configuration
-const app = express()
-const PORT = process.env.PORT || 3000
-app.use(express.urlencoded({ extended: true }))
-app.use(express.json());
-app.use(cookieParser())
-app.use(session({
+// Setting up dependencies 
+app.use(session({ 
   secret: process.env.SESSION_SECRET,
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: true
 }))
-app.use(express.static(__dirname + '/views'))
-app.set('view-engine', 'ejs')
-app.use('/', viewRouter)
-app.use('/api/', apiRouter)
+mongoose.connect(
+  process.env.MONGO_URI,
+  {
+    useNewUrlParser: true, 
+    useUnifiedTopology: true
+  }
+)
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-  useCreateIndex: true
-}, () => {
-  console.log('Connected to MongoDB...')
-});
+// Conneting routes
+app.use('/auth', require('./routes/auth'));
+app.use('/list', require('./routes/list'));
+app.use('/task', require('./routes/task'));
 
-// Start server
 app.listen(PORT, () => {
-  console.log(`Server listening on port ${PORT}...`)
+  console.log(`Server started on port ${PORT}`);
 })
