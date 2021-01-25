@@ -21,6 +21,13 @@ router.get('/:listId/tasks', checkAuth, async (req, res) => {
 // Create a new list
 router.post('/create', checkAuth, async (req, res) => {
 
+  // Check list empty
+  if (!req.body.name) {
+    return res.status(400).send({
+      error: 'List name cant be empty!'
+    })
+  }
+
   // Check is list is dupe
   const list = await List.findOne({
     creator: req.session.user,
