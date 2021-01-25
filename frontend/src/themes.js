@@ -2,10 +2,10 @@ export const light = {
   palette: {
     type: 'light',
     primary: {
-      main: '#2196f3'
+      main: '#0276aa'
     },
     secondary: {
-      main: '#00b0ff'
+      main: '#007bb2'
     },
   },
 }
@@ -14,10 +14,10 @@ export const dark = {
   palette: {
     type: 'dark',
     primary: {
-      main: '#6573c3'
+      main: '#03a9f4'
     },
     secondary: {
-      main: '#6573c3'
+      main: '#00b0ff'
     }
   },
 }
