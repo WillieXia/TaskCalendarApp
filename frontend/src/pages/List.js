@@ -1,7 +1,15 @@
 import React from 'react'
+import { useParams } from 'react-router-dom'
 
-function List({ user }) {
-  return <p>list page</p>
+import Container from '@material-ui/core/Container';
+
+function List(props) {
+
+  const { listId } = useParams()
+
+  return (
+    <Container>list page for {listId}</Container>
+  )
 }
 
 export default List

@@ -1,7 +1,11 @@
 import React from 'react'
 
-function Task({ user }) {
-  return <p>task page</p>
+import Container from '@material-ui/core/Container';
+
+function Task(props) {
+  return (
+    <Container>task page</Container>
+  )
 }
 
 export default Task

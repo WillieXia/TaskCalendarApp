@@ -14,9 +14,11 @@ function BaseRoute(props) {
       return (
         <Route
           path="/"
+          exact
           render={() => 
             <Home 
-              user={props.user} 
+              user={props.user}
+              lists={props.lists}
             />
           }
           user={props.user} 
@@ -26,6 +28,7 @@ function BaseRoute(props) {
       return (
         <Route 
           path="/" 
+          exact
           render={() => 
             <Auth 
               onAuthenticated={props.onAuthenticated}

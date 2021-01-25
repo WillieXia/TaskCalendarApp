@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 // Material imports
 import { makeStyles } from '@material-ui/core/styles';
@@ -17,6 +18,8 @@ import axios from 'axios';
 import { useSnackbar } from 'notistack'
 
 import ListDrawer from './ListDrawer'
+
+import parseError from '../helpers/parseError'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -73,7 +76,9 @@ function Navbar(props) {
       props.onLogout()
     })
     .catch(err => {
-      console.log(err)
+      enqueueSnackbar(parseError(err), {
+        variant: 'error'
+      })
     })
   }
 
@@ -88,7 +93,7 @@ function Navbar(props) {
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={handleDrawerOpen}>
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" className={classes.title} color="inherit">
+          <Typography variant="h6" className={classes.title} color="inherit" component={Link} to="/" style={{ textDecoration: 'none' }}>
             Progress
           </Typography>
           <div>
@@ -116,6 +121,7 @@ function Navbar(props) {
         open={open}
         onClose={handleDrawerClose}
         onOpen={handleDrawerOpen}
+        lists={props.lists}
       />
     </div>
   )

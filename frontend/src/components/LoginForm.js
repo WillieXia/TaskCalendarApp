@@ -6,6 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import { useSnackbar } from 'notistack';
 
@@ -13,11 +14,13 @@ function LoginForm(props) {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
   
   const { enqueueSnackbar } = useSnackbar();
 
   function handleSubmit(e) {
     e.preventDefault()
+    setIsLoading(true)
     axios.post(process.env.REACT_APP_API_URL + 'auth/login', {
       email,
       password
@@ -26,10 +29,10 @@ function LoginForm(props) {
       enqueueSnackbar(res.data.msg, {
         variant: 'success'
       })
+      setIsLoading(false)
       props.onAuthenticated(res.data.user)
     })
     .catch(err => {
-      console.log(err.response)
       let displayError = ''
       if (err.response && err.response.data && err.response.data.error) {
         displayError = err.response.data.error
@@ -39,6 +42,7 @@ function LoginForm(props) {
       enqueueSnackbar(displayError, {
         variant: 'error'
       })
+      setIsLoading(false)
     })
   }
 
@@ -65,7 +69,10 @@ function LoginForm(props) {
             <TextField id="password" type="password" value={password} onChange={handlePasswordChange} label="Password" fullWidth required/>
           </Grid>
           <Grid item xs={12}>
-            <Button variant="contained" color="primary" type="submit">Login</Button>
+            <Button variant="contained" color="primary" type="submit" disabled={isLoading}>
+              {!isLoading && 'Login'}
+              {isLoading && <CircularProgress size={24} />}
+            </Button>
           </Grid>
         </Grid>
       </form>

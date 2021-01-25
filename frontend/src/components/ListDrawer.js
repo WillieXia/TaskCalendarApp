@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 /// Material imports
 import { makeStyles } from '@material-ui/core/styles';
@@ -7,6 +8,7 @@ import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
 
 const useStyles = makeStyles({
   list: {
@@ -27,10 +29,22 @@ function ListDrawer(props) {
       onClick={props.onClose}
       onKeyDown={props.onClose}
     >
-      <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemText primary={text} />
+      <List
+        subheader={
+          <ListSubheader component="div" id="nested-list-subheader">
+            My lists
+          </ListSubheader>
+        }>
+        {props.lists.map((list) => (
+          <ListItem 
+            component={Link} 
+            to={`/list/${list._id}`} 
+            button 
+            key={list._id}>
+            <ListItemText 
+              primary={list.name} 
+              key={list._id}
+            />
           </ListItem>
         ))}
       </List>

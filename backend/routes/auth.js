@@ -14,7 +14,7 @@ router.post('/login', async (req, res) => {
   // User doesnt exist
   if (!user) {
     return res.status(401).send({
-      error: 'That email does not exist!'
+      error: 'An account with that email doesn\'t exist!'
     })
   }
 
@@ -50,7 +50,7 @@ router.post('/signup', async (req, res) => {
   const user = await User.findOne({ email })
   if (user) {
     return res.status(400).send({
-      error: 'Email already used! Try logging in.'
+      error: 'An account with that email exists!'
     })
   }
 

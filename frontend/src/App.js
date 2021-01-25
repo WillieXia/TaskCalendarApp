@@ -6,7 +6,6 @@ import {
 } from 'react-router-dom'
 import axios from 'axios'
 
-import Container from '@material-ui/core/Container';
 import { ThemeProvider } from '@material-ui/core'
 import { createMuiTheme } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
@@ -16,21 +15,35 @@ import { useSnackbar } from 'notistack';
 import BaseRoute from './components/BaseRoute'
 import List from './pages/List'
 import Task from './pages/Task'
-
 import Navbar from './components/Navbar'
+
+import parseError from './helpers/parseError'
 
 import { light, dark } from './themes'
 
-function App(props) {
+function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [authCheckFinished, setAuthCheckFinished] = useState(false)
   const [user, setUser] = useState({})
+  const [lists, setLists] = useState([])
   const [darkMode, setDarkMode] = useState(localStorage.getItem('darkMode') === 'true')
 
   const { enqueueSnackbar } = useSnackbar();
 
   const appliedTheme = createMuiTheme(darkMode ? dark : light)
+
+  const setToLoggedIn = (user) => {
+    setIsLoggedIn(true)
+    setUser(user)
+    fetchLists()
+  }
+
+  const setToLoggedOut = () => {
+    setIsLoggedIn(false)
+    setUser({})
+    setLists([])
+  }
 
   // Check authentication status
   useEffect(() => {
@@ -49,7 +62,7 @@ function App(props) {
       setAuthCheckFinished(true)
     })
     .catch(err => {
-      enqueueSnackbar('An error occured', {
+      enqueueSnackbar(parseError(err), {
         variant: 'error'
       })
       setToLoggedOut()
@@ -57,33 +70,45 @@ function App(props) {
     })
   }, [enqueueSnackbar])
 
-  const setToLoggedIn = (user) => {
-    setIsLoggedIn(true)
-    setUser(user)
-  }
-
-  const setToLoggedOut = () => {
-    setIsLoggedIn(false)
-    setUser({})
+  const fetchLists = () => {
+    axios.get(process.env.REACT_APP_API_URL + 'list', {
+      withCredentials: true
+    })
+    .then(res => {
+      setLists(res.data.lists)
+    })
+    .catch(err => {
+      enqueueSnackbar(parseError(err), {
+        variant: 'error'
+      })
+    })
   }
 
   return (
     <ThemeProvider theme={appliedTheme}>
       <CssBaseline />
-      {isLoggedIn && <Navbar onLogout={setToLoggedOut} darkMode={darkMode} setDarkMode={setDarkMode}/>}
-      <Container>
-        <Router>
-          <Switch>
+      <Router>
+        {isLoggedIn && 
+          <Navbar 
+            onLogout={setToLoggedOut} 
+            darkMode={darkMode} 
+            setDarkMode={setDarkMode}
+            lists={lists}
+          />
+        }
+        <Switch>
+          <>
             <BaseRoute 
               authCheckFinished={authCheckFinished} 
               isLoggedIn={isLoggedIn}
               onAuthenticated={setToLoggedIn}
-              user={user}/>
+              user={user}
+              lists={lists}/>
             <Route path="/list/:listId" component={List}></Route>
             <Route path="/task/:taskId" component={Task}></Route>
-          </Switch>
-        </Router>
-      </Container>
+          </>
+        </Switch>
+      </Router>
     </ThemeProvider>
   );
 }
