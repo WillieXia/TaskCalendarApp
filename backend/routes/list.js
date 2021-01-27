@@ -1,7 +1,9 @@
 const express = require('express');
 
 const checkAuth = require('../middleware/checkAuth')
+
 const List = require('../models/List')
+const Task = require('../models/Task')
 
 const router = express.Router();
 
@@ -13,9 +15,20 @@ router.get('/', checkAuth, async (req, res) => {
   })
 })
 
-// Get tasks from a specific list
-router.get('/:listId/tasks', checkAuth, async (req, res) => {
-
+// Get list data
+router.get('/:listId', checkAuth, async (req, res) => {
+  const { listId } = req.params
+  const list = await List.findById(listId)
+  const tasks = await Task.find({ list: listId })
+  if (!list) {
+    return res.status(400).send({
+      error: 'We couldn\'t find that list!' 
+    }) 
+  }
+  return res.send({
+    list,
+    tasks
+  })
 })
 
 // Create a new list
