@@ -8,6 +8,8 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
+import parseError from '../helpers/parseError'
+
 import { useSnackbar } from 'notistack';
 
 function LoginForm(props) {
@@ -33,13 +35,7 @@ function LoginForm(props) {
       props.onAuthenticated(res.data.user)
     })
     .catch(err => {
-      let displayError = ''
-      if (err.response && err.response.data && err.response.data.error) {
-        displayError = err.response.data.error
-      } else {
-        displayError = 'An unknown error occured'
-      }
-      enqueueSnackbar(displayError, {
+      enqueueSnackbar(parseError(err), {
         variant: 'error'
       })
       setIsLoading(false)

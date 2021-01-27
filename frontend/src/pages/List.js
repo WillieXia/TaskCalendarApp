@@ -6,9 +6,11 @@ import { useSnackbar } from 'notistack'
 
 import Container from '@material-ui/core/Container';
 
+import CreateTask from '../components/CreateTask'
+
 import parseError from '../helpers/parseError'
 
-function List() {
+function List(props) {
 
   const { listId } = useParams()
 
@@ -37,7 +39,11 @@ function List() {
 
   return (
     <Container>
-      Hello, {list.name}
+      <p>Hello, {list.name}</p>
+      <CreateTask lists={props.lists}/>
+      {tasks.map(task => (
+        <h2 key={task._id}>{task.name}</h2>
+      ))}
     </Container>
   )
 

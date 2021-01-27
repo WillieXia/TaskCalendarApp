@@ -14,17 +14,14 @@ const TaskSchema = new Schema({
     type: String,
     required: true
   },
-  description: {
-    type: String,
-    required: true
-  },
   numOfCheckpoints: {
     type: Number,
     required: true
   },
   currentCheckpoints: {
     type: Number,
-    required: true
+    required: true,
+    default: 0
   }
 })
 

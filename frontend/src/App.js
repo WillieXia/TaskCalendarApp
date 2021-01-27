@@ -103,9 +103,14 @@ function App() {
               isLoggedIn={isLoggedIn}
               onAuthenticated={setToLoggedIn}
               user={user}
-              lists={lists}/>
-            <Route path="/list/:listId" component={List}></Route>
-            <Route path="/task/:taskId" component={Task}></Route>
+              lists={lists}
+            />
+            <Route 
+              path="/list/:listId" 
+              render={() => 
+                <List lists={lists}/>
+              }
+            />
           </>
         </Switch>
       </Router>

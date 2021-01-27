@@ -60,7 +60,6 @@ router.post('/create', checkAuth, async (req, res) => {
   try {
     await newList.save()
   } catch(err) {
-    console.log(err)
     return res.status(400).send({
       error: 'Unnable to create list'
     })
